@@ -22,7 +22,8 @@ import moment from 'moment';
 
 export default {
   props: {
-    cityname: String
+    latitude: Number,
+    longitude: Number
   },
   data() {
     return {
@@ -35,9 +36,10 @@ export default {
   },
   methods: {
     async fetchWeatherData() {
-      const city = this.cityname;
+      const lat = this.latitude;
+      const lon = this.longitude;
       const apiKey = '9c2271a2d650fc3a5de255638a4a7a05';
-      const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`;
+      const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
 
       try {
         this.loading = true;

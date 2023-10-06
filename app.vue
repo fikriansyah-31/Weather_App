@@ -1,34 +1,11 @@
 <template>
-  <div class="bg-blue-300 min-h-screen">
-    <div class="flex flex-col items-center">
-      <div class="header container text-center my-10">
-        <h1 class="text-4xl font-bold text-gray-700">Weather App</h1>
-      </div>
-      <div class="searchbar w-full md:w-3/4 mx-2 relative text-center right-6">
-        <input
-          v-model="city"
-          type="text"
-          class="input form-input sm:w-2/5 py-2 mt-2 md:mt-0 pr-8 pl-4 rounded-lg shadow-lg"
-          placeholder="Enter a City Name"
-        />
-        <button
-          @click="searchWeather"
-          class="absolute top-0 mt-2 md:mt-0 m-2 p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-        >
-          Search
-        </button>
-      </div>
+  <div>
+    <div v-if="locationPermissionStatus === 'granted'">
+      <Weather :latitude="latitude" :longitude="longitude" v-if="showWeather || locationGranted" />
+        <Card :latitude="latitude" :longitude="longitude" v-if="showWeather || locationGranted" />
     </div>
-    <div class="mt-8">
-      <LocationPermission
-        v-if="!locationGranted"
-        @location-granted="onLocationGranted"
-        @location-denied="onLocationDenied"
-      />
-      <Weather :city="city" v-if="showWeather || locationGranted" />
-    </div>
-    <div class="mt-5">
-      <Card :cityname="city" v-if="showWeather || locationGranted" />
+    <div v-else>
+      <button @click="askForLocationPermission">Allow Access to Location</button>
     </div>
   </div>
 </template>
@@ -36,50 +13,57 @@
 <script>
 import Weather from './components/weather.vue';
 import Card from './components/card.vue';
-import LocationPermission from "./components/locationPermission.vue";
 
 export default {
   components: {
     Weather,
-    Card,
-    LocationPermission,
+    Card
   },
   data() {
     return {
       city: '',
+      latitude: null, // Latitude akan diisi otomatis saat izin lokasi diberikan
+      longitude: null, // Longitude akan diisi otomatis saat izin lokasi diberikan
       showWeather: false,
-      locationGranted: false,
-      latitude: null,
-      longitude: null,
+      locationPermissionStatus: null
     };
   },
   methods: {
-    async searchWeather() {
-      this.showWeather = false;
-      await this.$nextTick();
-      this.showWeather = true;
-    },
-    onLocationGranted({ latitude, longitude }) {
-      this.latitude = latitude;
-      this.longitude = longitude;
-      this.locationGranted = true;
+    async askForLocationPermission() {
+      if (typeof navigator !== 'undefined' && 'permissions' in navigator) {
+        try {
+          const permissionStatus = await navigator.permissions.query({
+            name: 'geolocation'
+          });
 
-      // Sekarang, Anda dapat memanggil metode untuk mendapatkan data cuaca berdasarkan lokasi.
-      // Misalnya: this.fetchWeatherDataByLocation(latitude, longitude);
-    },
-    onLocationDenied() {
-      this.locationGranted = false;
-      console.error("Location access denied.");
+          if (permissionStatus.state === 'granted') {
+            this.locationPermissionStatus = 'granted';
+            await this.loadWeatherByLocation();
+          } else if (permissionStatus.state === 'prompt') {
+            this.locationPermissionStatus = 'prompt';
+          } else {
+            this.locationPermissionStatus = 'denied';
+          }
+        } catch (error) {
+          console.error("Error checking geolocation permission:", error);
+          this.locationPermissionStatus = 'error';
+        }
+      } else {
+        console.error("Geolocation permissions are not available in this environment.");
+        this.locationPermissionStatus = 'unavailable';
+      }
     },
     async loadWeatherByLocation() {
       if (navigator.geolocation) {
         try {
           const position = await this.getCurrentPosition();
           const { latitude, longitude } = position.coords;
-          // Panggil metode untuk memuat cuaca berdasarkan lokasi
-        this.fetchWeatherDataByLocation(latitude, longitude);
+          this.latitude = latitude;
+          this.longitude = longitude;
+          this.showWeather = true;
         } catch (error) {
           console.error("Error getting geolocation:", error);
+          this.showWeather = false;
         }
       }
     },
@@ -88,6 +72,10 @@ export default {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
     },
+  },
+  created() {
+    // Cek izin lokasi saat komponen dimuat
+    this.askForLocationPermission();
   },
 };
 </script>

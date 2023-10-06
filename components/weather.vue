@@ -50,14 +50,17 @@
   
   export default {
     props: {
-      city: {
-        type: String,
-        required: true
-      }
+      latitude: {
+        type: Number,
+        required: true,
+      },
+      longitude: {
+        type: Number,
+        required: true,
+      },
     },
     data() {
       return {
-        cityname: this.city,
         temperature: null,
         description: null,
         iconUrl: null,
@@ -65,23 +68,21 @@
         date: null,
         time: null,
         dayOfWeek: null,
-        humidity: null, 
+        humidity: null,
         wind: null,
         country: null,
         monthName: [
           'January', 'February', 'March', 'April', 'May', 'June', 'July',
           'August', 'September', 'October', 'November', 'December'
-        ]
+        ],
       };
     },
     async created() {
       try {
-        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=9c2271a2d650fc3a5de255638a4a7a05`);
+        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&units=metric&appid=9c2271a2d650fc3a5de255638a4a7a05`);
         const weatherData = response.data;
   
-        if (weatherData.cod === '404') {
-          this.description = 'City not found';
-        } else {
+        if (weatherData.cod === 200) {
           this.temperature = Math.round(weatherData.main.temp);
           this.description = weatherData.weather[0].description;
           this.name = weatherData.name;
@@ -96,21 +97,21 @@
           }
   
           this.wind = weatherData.wind.speed;
-          this.humidity = weatherData.main.humidity; 
+          this.humidity = weatherData.main.humidity;
+        } else {
+          this.description = 'City not found';
         }
-  
-        console.log(weatherData);
       } catch (error) {
         console.error(error);
-        this.description = 'City not found';
+        this.description = 'Failed to fetch weather data';
       }
     },
     methods: {
       getDayOfWeek(dayIndex) {
         const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return daysOfWeek[dayIndex];
-      }
-    }
+      },
+    },
   };
   </script>
   
