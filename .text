@@ -1,0 +1,22 @@
+1 . Vue.js: Vue.js adalah framework JavaScript yang digunakan untuk membangun antarmuka pengguna (UI) interaktif dalam aplikasi web. Ini adalah salah satu framework yang sangat populer dan cukup mudah dipelajari.
+
+Nuxt.js: Nuxt.js adalah kerangka kerja server-side rendering (SSR) berbasis Vue.js yang memungkinkan pengembang untuk membuat aplikasi web universal dengan cepat. Ini menyediakan banyak fitur bawaan, seperti routing, server-side rendering, dan manajemen status, yang membuat pengembangan aplikasi web lebih efisien.
+
+TypeScript: TypeScript adalah bahasa pemrograman berbasis JavaScript yang menyediakan tipe data statis opsional untuk membantu dalam pengembangan aplikasi yang lebih besar dan kompleks. TypeScript membuat kode lebih aman dan mudah dibaca dengan dukungan penuh untuk pemahaman tipe data.
+Untuk kemahiran : 
+Vue : 7/10 , Nuxt: 7/10, TypeScript: 7/10
+
+2. Dalam Vue.js dan Nuxt.js, pengelolaan routing dapat dicapai dengan menggunakan Vue Router untuk Vue.js dan dengan dukungan routing bawaan Nuxt.js untuk Nuxt.js
+
+3. Dalam Vue.js dan Nuxt.js, pengelolaan state dapat dicapai dengan berbagai cara. Dalam Vue.js, Anda dapat menggunakan VueX untuk mengelola state global, sementara dalam Nuxt.js, Anda dapat menggunakan module @nuxtjs/store untuk pengelolaan state.
+
+4. Single Page Application (SPA):
+
+Rendering di Sisi Klien: SPA merender hampir seluruh tampilan di sisi klien (browser). Hal ini berarti bahwa setelah halaman utama pertama kali dimuat, perubahan tampilan dan navigasi berikutnya dilakukan di sisi klien tanpa perlu memuat ulang halaman.
+
+   Server-Side Rendering (SSR):
+
+Rendering di Sisi Server: SSR merender tampilan pada server sebelum mengirimkannya ke klien. Ketika pengguna meminta halaman, server merender HTML lengkap dan mengirimkannya ke browser.
+pilihan antara SPA dan SSR tergantung pada karakteristik proyek dan kebutuhan bisnis, Beberapa proyek bahkan dapat menggunakan kedua pendekatan ini secara bersamaan (misalnya, dengan konsep Universal JavaScript) untuk menggabungkan keuntungan keduanya.
+
+5. Tidak pernah untuk membuat CI/CD untuk vue js dan nuxt  
